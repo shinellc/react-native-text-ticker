@@ -1,4 +1,4 @@
-declare module 'react-native-text-ticker' {
+declare module '@shinellc/react-native-text-ticker' {
   import React from 'react';
   import { StyleProp, TextProps, TextStyle, EasingFunction } from 'react-native';
 
