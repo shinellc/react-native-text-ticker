@@ -11,8 +11,6 @@ import {
   I18nManager
 } from 'react-native'
 
-const { UIManager } = NativeModules
-
 export const TextTickAnimationType = Object.freeze({
   auto: 'auto',
   scroll: 'scroll',
@@ -202,6 +200,7 @@ export default class TextMarquee extends PureComponent {
     this.setState({ animating: true })
     this.setTimeout(async () => {
       await this.calculateMetrics()
+      await new Promise(resolve => setTimeout(resolve, 100))
       if (!this.state.contentFits) {
         const {onScrollStart} = this.props
         if(onScrollStart && typeof onScrollStart === "function") {
@@ -233,15 +232,12 @@ export default class TextMarquee extends PureComponent {
       try {
         const measureWidth = node =>
           new Promise(async (resolve, reject) => {
-            // nodehandle is not always there, causes crash. modified to check..
-            const nodeHandle = findNodeHandle(node);
-            if (nodeHandle) {
-              UIManager.measure(nodeHandle, (x, y, w) => {
-                // console.log('Width: ' + w)
+            if (node) {
+              node.measure((x, y, w) => {
                 return resolve(w)
               })
             } else {
-              return reject('nodehandle_not_found');
+              return reject('node_not_found');
             }
           });
         const [containerWidth, textWidth] = await Promise.all([
